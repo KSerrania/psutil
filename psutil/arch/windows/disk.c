@@ -289,6 +289,13 @@ psutil_disk_partitions(PyObject *self, PyObject *args) {
             if (pflags & FILE_SUPPORTS_REPARSE_POINTS) {
                 mp_h = FindFirstVolumeMountPoint(
                     drive_letter, mp_buf, MAX_PATH);
+
+                err = GetLastError();
+                if (err != 0) {
+                    psutil_debug("FindFirstVolumeMountPoint -> ERROR: %i", err);
+                    goto error;
+                }
+
                 if (mp_h != INVALID_HANDLE_VALUE) {
                     mp_flag = TRUE;
                     while (mp_flag) {
